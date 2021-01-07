@@ -13,4 +13,8 @@ The source code for the ClojureScript application is located in src/cljs/profile
 >lein figwheel
 </pre>
 
+# playground
+The file resources/public/index.html is currently used for developing a simpler layout. It can be opened with VSCode Live Server directly.
 
+# Usable VS Code plugins
+Some usable plugins for development is Calva and clj-condo for Clojure development, and HTML Boilerplate and Beautify for the HTML development.
