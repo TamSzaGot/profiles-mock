@@ -135,6 +135,149 @@ img, svg {
     }
 }
 
+header {
+    border-bottom: 1px solid #efefef;
+}
+
+.header-main {
+    display: flex;
+    flex-direction: row;
+    flex-basis: 100%;
+}
+
+.header-inner3 {
+    display: flex;
+    flex-direction: column;
+    border-bottom: 1px solid #efefef;
+    width: 100%;
+}
+
+.header-list {
+    display: flex;
+    justify-content: space-between;
+}
+
+.header-buttons {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+div .header-button {
+    height: calc(2.25rem + 4px);
+    background: var(--primary);
+    color: var(--white);
+    padding: .5rem 1.25rem;
+    border: 1px solid var(--primary);
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.search-button0 {
+    font-size: 20px;
+    font-weight: 400;
+    padding: 1.4rem;
+    background-color: transparent;
+    border: 1px solid transparent;
+    color: #000;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.search-button01 {
+    padding: 1.4rem;
+}
+
+i.i-l-languages {
+    font-size: 24px;
+    line-height: 0;
+}
+
+@media (max-width: 930px) {
+    span.lang-button {
+        display: none;
+    }
+    span.search-button {
+        display: none;
+    }
+}
+
+@media (max-width: 767px) {
+    div .header-buttons {
+        height: 3.4rem;
+        background: var(--primary);
+        color: var(--white);
+        padding: .5rem 1.25rem;
+        border: 1px solid var(--primary);
+        font-weight: 600;
+        font-size: 1rem;
+        flex-basis: 100%;
+        margin-bottom: .5rem!important;
+        }
+    .lang-button {
+        display: none;
+    }
+    .search-button {
+        display: none;
+    }
+}
+
+@media (min-width: 768px) {
+    .header-buttons {
+        display: row;
+        margin-left: auto;
+        padding: 0;
+        margin-bottom: 0;
+    }
+    div .header-button{
+        background: var(--white);
+        color: #333;
+        padding: 0 16px;
+        font-size: 15px;
+        font-weight: 600;
+        border: 0px;
+        border-left: 1px solid #efefef;
+        height: 69px;
+
+    }
+    .search-button0 {
+        display: none;
+    }
+    .header-inner3 {
+        flex-direction: row;
+    }
+}
+
+div .aflogo {
+    width: 100%;
+    padding-top: 16px;
+    padding-left: 15px;
+    justify-content: center;
+    height: 69px;
+}
+
+.aflogo-img {
+    width: 312px;
+    height: 39px;
+    vertical-align: middle;
+}
+
+@media (max-width: 410px) {
+    div .aflogo {
+        padding-top: 18px;
+    }
+    .aflogo-img {
+        width: 288px;
+        height: 36px;
+    }
+}
+
+@media (max-width: 374px) {
+    .aflogo-img {
+        width: 256px;
+        height: 32px;
+    }
+}
+
 .icon-x {
     transform: scale(1.25);
     padding-left: 0.4rem;
@@ -154,6 +297,10 @@ img, svg {
 
 .s1 {
     margin-bottom: 1rem!important;
+}
+
+.cont {
+    position: relative;
 }
 
 .rupoc-img {
@@ -178,12 +325,12 @@ img, svg {
 }
 
 @media (min-width: 576px) {
-    .container {
+    .cont {
         max-width: 100%;
     }
 }
 
-.container {
+.cont {
     width: 100%;
     padding-top: 1.5rem;
     padding-right: 15px;
@@ -194,14 +341,13 @@ img, svg {
     background-color: var(--gray-20);
 }
 
-.section {
+.sect {
     padding: .3125rem .625rem;
-    margin-bottom: 1.5625rem;
     background-color: var(--white);
 }
 
 @media (min-width: 576px) {
-    .section {
+    .sect {
         padding: .9375rem 1.875rem;
     }
 }
@@ -213,7 +359,7 @@ img, svg {
     justify-content:space-between;
 }
 
-.form-inline {
+.form-inl {
     display: flex;
     flex-direction: row;
 }
@@ -242,7 +388,7 @@ img, svg {
 }
 
 @media (max-width: 767px) {
-    .form-inline {
+    .form-inl {
         flex-direction: column;
     }
 }
@@ -288,4 +434,65 @@ blue-button .blue-button {
     background-color: var(--blue); 
 }
 
+.footer {
+    padding-top: 2.1rem;
+    padding-bottom: 2.9rem;
+    background-color: #00005a;
+}
 
+.footer a, .footer p {
+    color: var(--white);
+}
+
+.footer-top {
+    margin-bottom: .6rem;
+}
+
+@media (min-width: 768px) {
+    .footer-top {
+        margin-bottom: 3.5rem;
+    }    
+}
+
+.footer-col1 {
+    position: relative;
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+}
+
+.row {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    margin-right: -15px;
+    margin-left: -15px;
+}
+
+.footer-services .footer-links__link {
+    display: inline-block;
+    margin-bottom: 1.2rem;
+}
+
+.footer-services .footer-links__link i {
+    font-size: 21px;
+    margin-right: .7rem;
+}
+
+.footer [class*=" i-"]:before, .footer [class^=i-]:before {
+    width: 25px;
+    text-align: center;
+}
+
+.footer-services .footer-links__link .i-l-languages:before {
+    font-size: 23px;
+    position: relative;
+    top: -5px;
+    left: 3px;
+}
+
+.footer-services .footer-links__link i.kontakta-oss-ikon {
+    margin-right: .3125rem;
+}
