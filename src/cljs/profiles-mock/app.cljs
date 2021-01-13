@@ -1,4 +1,16 @@
-(ns profiles-mock.app)
+(ns profiles-mock.app
+  (:require [reagent.core :as r]))
+
+;; In-browser state
+
+(defonce profile-name-atom (r/atom ""))
+
+;; Helpers
+
+(defn target-value
+  "Get the value from a dom event"
+  [event]
+  (some-> event .-target .-value))
 
 ;; -- VIEW --------------------------------------------------------------------
 
@@ -54,50 +66,62 @@
 
 (defn notification
   [message]
-  [:div {:class "cont"}
-   [:div {:class "notification"}
-    [:div {:class "notification-icon"}
-     [:svg {:width "42", :height "42", :viewBox "0 0 42 42", :xmlns "http://www.w3.org/2000/svg"}
-      [:g {:fill "currentColor", :fill-rule "nonzero"}
-       [:path {:d "M21 39c9.941 0 18-8.059 18-18S30.941 3 21 3 3 11.059 3 21s8.059 18 18 18zm0 3C9.402 42 0 32.598 0 21S9.402 0 21 0s21 9.402 21 21-9.402 21-21 21z"}]
-       [:path {:d "M22 10c2.071 0 3.75 1.485 3.75 3.316 0 1.831-1.679 3.316-3.75 3.316-2.071 0-3.75-1.485-3.75-3.316C18.25 11.485 19.929 10 22 10zm5 20.053c0 .523-.48.947-1.071.947H18.07C17.48 31 17 30.576 17 30.053v-1.895c0-.523.48-.947 1.071-.947h1.072v-5.053H18.07c-.591 0-1.071-.424-1.071-.947v-1.895c0-.523.48-.948 1.071-.948h5.715c.591 0 1.071.425 1.071.948v7.895h1.072c.591 0 1.071.424 1.071.947v1.895z"}]]]]
-    [:div {:class "notification-content"}
-     [:button {:type "button", :class "notification-close", :aria-label "Stäng meddelandet"}
-      [:div {:class "notification-close-text"} "Stäng"]
-      [:div {:class "icon-x"}
-       [:svg {:width "12", :height "12", :viewBox "0 0 12 12", :xmlns "http://www.w3.org/2000/svg"}
-        [:g {:stroke "currentColor", :stroke-width "2", :fill "none", :fill-rule "evenodd", :stroke-linecap "square"}
-         [:path {:d "M2 2l7.986 7.986M9.986 2L2 9.986"}]]]]]
-     [:div message]]]])
+  (r/with-let
+    [closed (r/atom false)]
+    (when (not @closed)
+      [:div {:class "cont"}
+       [:div {:class "notification"}
+        [:div {:class "notification-icon"}
+         [:svg {:width "42", :height "42", :viewBox "0 0 42 42", :xmlns "http://www.w3.org/2000/svg"}
+          [:g {:fill "currentColor", :fill-rule "nonzero"}
+           [:path {:d "M21 39c9.941 0 18-8.059 18-18S30.941 3 21 3 3 11.059 3 21s8.059 18 18 18zm0 3C9.402 42 0 32.598 0 21S9.402 0 21 0s21 9.402 21 21-9.402 21-21 21z"}]
+           [:path {:d "M22 10c2.071 0 3.75 1.485 3.75 3.316 0 1.831-1.679 3.316-3.75 3.316-2.071 0-3.75-1.485-3.75-3.316C18.25 11.485 19.929 10 22 10zm5 20.053c0 .523-.48.947-1.071.947H18.07C17.48 31 17 30.576 17 30.053v-1.895c0-.523.48-.947 1.071-.947h1.072v-5.053H18.07c-.591 0-1.071-.424-1.071-.947v-1.895c0-.523.48-.948 1.071-.948h5.715c.591 0 1.071.425 1.071.948v7.895h1.072c.591 0 1.071.424 1.071.947v1.895z"}]]]]
+        [:div {:class "notification-content"}
+         [:button {:type "button", :class "notification-close", :aria-label "Stäng meddelandet"
+                   :on-click #(reset! closed true)}
+          [:div {:class "notification-close-text"} "Stäng"]
+          [:div {:class "icon-x"}
+           [:svg {:width "12", :height "12", :viewBox "0 0 12 12", :xmlns "http://www.w3.org/2000/svg"}
+            [:g {:stroke "currentColor", :stroke-width "2", :fill "none", :fill-rule "evenodd", :stroke-linecap "square"}
+             [:path {:d "M2 2l7.986 7.986M9.986 2L2 9.986"}]]]]]
+         [:div message]]]]))
+  )
 
 (defn profile-name
   []
-  [:div {:class "cont"}
-   [:div {:class "sect"}
-    [:h2 "Ge profilen ett namn"]
-    [:p {:class "s1"} "Namnet är synligt bara för dig och du kan när du vill ändra profilnamnet."]
-    [:form {:class "form-inl"}
-     [:prof-name-input
-      [:input {:class "prof-name-input", :type "text", :id "namn", :maxLength "40"}]]
-     [:blue-button
-      [:button {:class "blue-button prof-name-button", :type "button"}
-       [:div "Spara"]]]]
-    [:prof-error-message]]])
+  (r/with-let
+    [input-name (r/atom @profile-name-atom)]
+    [:div {:class "cont"}
+     [:div {:class "sect"}
+      [:h2 "Ge profilen ett namn"]
+      [:p {:class "s1"} "Namnet är synligt bara för dig och du kan när du vill ändra profilnamnet."]
+      [:form {:class "form-inl"}
+       [:prof-name-input
+        [:input#namn.form-control.custom1 {:type      "text"
+                                           :value     @input-name
+                                           :on-change #(reset! input-name (target-value %))
+                                           :maxLength "40"}]]
+       [:blue-button
+        [:button {:class    "digi-ng-button-base digi-ng-button-base--primary digi-ng-button-base--m"
+                  :type     "button"
+                  :on-click #(reset! profile-name-atom @input-name)}
+         [:div {:class "digi-ng-button__content"} "Spara"]]]]
+      [:prof-error-message]]]))
 
 (defn body
   []
   [:body-section
-   (notification "Glöm inte att publicera din profil för att göra den synlig för arbetsgivare")
+   [notification "Glöm inte att publicera din profil för att göra den synlig för arbetsgivare"]
    [:div {:class "cont"}
     [:h1 {:class "create-profile"} "Skapa profil"]]
-   (profile-name)
-   [:div {:class "example-text"} "this is a text"]])
+   [profile-name]
+   [:div {:class "example-text"} "this is a text"](when (not-empty @profile-name-atom)
+       [:div {:class "example-text"} "Your name: " @profile-name-atom])])
 
 
 (defn component
   []
   [:div
-   (header)
-   (link-back)
-   (body)])
-
+   [header]
+   [link-back]
+   [body]])
