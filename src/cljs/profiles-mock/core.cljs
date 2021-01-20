@@ -1,5 +1,5 @@
 (ns profiles-mock.core
-  (:require [reagent.core :as reagent]
+  (:require [reagent.dom :as dom]
             [devtools.core :as devtools]
             [profiles-mock.app :as app]))
 
@@ -13,8 +13,8 @@
   [:div
    [app/component]])
 
-(reagent/render-component [app-component]
+(dom/render [app-component]
                           (. js/document (getElementById "app")))
 
 (defn on-js-reload []
-  (reagent/force-update-all))
+  (dom/force-update-all))

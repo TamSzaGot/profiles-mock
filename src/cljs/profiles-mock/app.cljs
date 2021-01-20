@@ -1,9 +1,44 @@
 (ns profiles-mock.app
-  (:require [reagent.core :as r]))
+  (:require [reagent.core :as r]
+            [re-frame.core :as rf]
+            [clojure.string :as str]
+            [ajax.core :as ajax]
+            [day8.re-frame.http-fx]))
+
+
+;; -- reframe components --------------------------------------------------------------------
+
+  (defn accordion-card
+  "defines a bootstrap accordion card"
+  [accordion-id card-id title-text body expanded?]
+  (let [accordion-card-id (str accordion-id "card" card-id)
+        accordion-card-body-id (str accordion-card-id "body")]
+    [:div.card {:id accordion-card-id}
+     [:div.card-title.collapsed {:type "button"
+                                               :data-toggle "collapse"
+                                               :data-target (str "#" accordion-card-body-id)
+                                               :aria-expanded (if expanded? "true" "false")
+                                               :aria-controls accordion-card-body-id}
+      title-text]
+     [:div.collapse {:class (if expanded? "show" "")
+                     :id accordion-card-body-id
+                     :aria-labelledby accordion-card-id
+                     :data-parent (str "#" accordion-id)}
+      [:div.card-body
+       body]]]))
+
+(defn accordion
+  "creates a bootstrap accordion with the cards in the cards collection
+  accordion-id    the id of this accordion
+  cards           list of card components
+  "
+  [id cards]
+  (let [accordion-id (str "accordion" id)]
+    (into [:div.accordion {:id accordion-id}] (map-indexed (fn [idx itm] (accordion-card accordion-id idx (:title itm) (:body itm) false)) cards))))
 
 ;; In-browser state
 
-(defonce profile-name-atom (r/atom ""))
+(defonce profile-name-atom (r/atom "test"))
 
 ;; Helpers
 
@@ -87,36 +122,77 @@
          [:div message]]]]))
   )
 
-(defn profile-name
+(defn section-name
   []
   (r/with-let
-    [input-name (r/atom @profile-name-atom)]
-    [:div {:class "cont"}
+   [input-name (r/atom @profile-name-atom)]
      [:div {:class "sect"}
       [:h2 "Ge profilen ett namn"]
       [:p {:class "s1"} "Namnet är synligt bara för dig och du kan när du vill ändra profilnamnet."]
       [:form {:class "form-inl"}
        [:prof-name-input
-        [:input#namn.form-control.custom1 {:type      "text"
-                                           :value     @input-name
-                                           :on-change #(reset! input-name (target-value %))
-                                           :maxLength "40"}]]
+        [:input#namn.prof-name-input {:type      "text"
+                                      :value     @input-name
+                                      :on-change #(reset! input-name (target-value %))
+                                      :maxLength "40"}]]
        [:blue-button
-        [:button {:class    "digi-ng-button-base digi-ng-button-base--primary digi-ng-button-base--m"
-                  :type     "button"
-                  :on-click #(reset! profile-name-atom @input-name)}
+        [:button.blue-button.prof-name-button {:type     "button"
+                                               :on-click #(reset! profile-name-atom @input-name)}
          [:div {:class "digi-ng-button__content"} "Spara"]]]]
-      [:prof-error-message]]]))
+      [:prof-error-message]]))
+
+(defn dummy1
+  []
+  [:div
+   [:h2 "Title"]
+   [:div "Morbi a metus. Phasellus enim erat, vestibulum vel, aliquam a, posuere eu, velit. Nullam sapien sem, ornare ac, nonummy non, lobortis a, enim. Nunc tincidunt ante vitae massa. Duis ante orci, molestie vitae, vehicula venenatis, tincidunt ac, pede. Nulla accumsan, elit sit amet varius semper, nulla mauris mollis quam, tempor suscipit diam nulla vel leo. Etiam commodo dui eget wisi. Donec iaculis gravida nulla. Donec quis nibh at felis congue commodo. Etiam bibendum elit eget erat. Morbi a metus. Phasellus enim erat, vestibulum vel, aliquam a, posuere eu, velit. Nullam sapien sem, ornare ac, nonummy non, lobortis a, enim. Nunc tincidunt ante vitae massa. Duis ante orci, molestie vitae, vehicula venenatis, tincidunt ac, pede. Nulla accumsan, elit sit amet varius semper, nulla mauris mollis quam, tempor suscipit diam nulla vel leo. Etiam commodo"]])
+
+(defn dummy2
+  []
+  [:div
+   [:h2 "Title"]
+   [:div "Morbi a metus. Phasellus enim erat, vestibulum vel, aliquam a, posuere eu, velit. Nullam sapien sem, ornare ac, nonummy non, lobortis a, enim. Nunc tincidunt ante vitae massa. Duis ante orci, molestie vitae, vehicula venenatis, tincidunt ac, pede. Nulla accumsan, elit sit amet varius semper, nulla mauris mollis quam, tempor suscipit diam nulla vel leo. Etiam commodo dui eget wisi. Donec iaculis gravida nulla. Donec quis nibh at felis congue commodo. Etiam bibendum elit eget erat. Morbi a metus. Phasellus enim erat, vestibulum vel, aliquam a, posuere eu, velit. Nullam sapien sem, ornare ac, nonummy non, lobortis a, enim. Nunc tincidunt ante vitae massa. Duis ante orci, molestie vitae, vehicula venenatis, tincidunt ac, pede. Nulla accumsan, elit sit amet varius semper, nulla mauris mollis quam, tempor suscipit diam nulla vel leo. Etiam commodo"]])
+
+(defn dummy3
+  []
+  [:div
+   [:h2 "Title"]
+   [:div "Morbi a metus. Phasellus enim erat, vestibulum vel, aliquam a, posuere eu, velit. Nullam sapien sem, ornare ac, nonummy non, lobortis a, enim. Nunc tincidunt ante vitae massa. Duis ante orci, molestie vitae, vehicula venenatis, tincidunt ac, pede. Nulla accumsan, elit sit amet varius semper, nulla mauris mollis quam, tempor suscipit diam nulla vel leo. Etiam commodo dui eget wisi. Donec iaculis gravida nulla. Donec quis nibh at felis congue commodo. Etiam bibendum elit eget erat. Morbi a metus. Phasellus enim erat, vestibulum vel, aliquam a, posuere eu, velit. Nullam sapien sem, ornare ac, nonummy non, lobortis a, enim. Nunc tincidunt ante vitae massa. Duis ante orci, molestie vitae, vehicula venenatis, tincidunt ac, pede. Nulla accumsan, elit sit amet varius semper, nulla mauris mollis quam, tempor suscipit diam nulla vel leo. Etiam commodo"]])
+
+(defn dummy4
+  []
+  [:div
+   [:h2 "Title"]
+   [:div "Morbi a metus. Phasellus enim erat, vestibulum vel, aliquam a, posuere eu, velit. Nullam sapien sem, ornare ac, nonummy non, lobortis a, enim. Nunc tincidunt ante vitae massa. Duis ante orci, molestie vitae, vehicula venenatis, tincidunt ac, pede. Nulla accumsan, elit sit amet varius semper, nulla mauris mollis quam, tempor suscipit diam nulla vel leo. Etiam commodo dui eget wisi. Donec iaculis gravida nulla. Donec quis nibh at felis congue commodo. Etiam bibendum elit eget erat. Morbi a metus. Phasellus enim erat, vestibulum vel, aliquam a, posuere eu, velit. Nullam sapien sem, ornare ac, nonummy non, lobortis a, enim. Nunc tincidunt ante vitae massa. Duis ante orci, molestie vitae, vehicula venenatis, tincidunt ac, pede. Nulla accumsan, elit sit amet varius semper, nulla mauris mollis quam, tempor suscipit diam nulla vel leo. Etiam commodo"]])
+
+
+(def card-list [{:title "Presentation och önskat yrke" :body [dummy1]}
+                {:title "Arbetslivserfarenhet och utbildning" :body [dummy2]}
+                {:title "Kompetenser och övriga meriter" :body [dummy3]}
+                {:title "Anställningsvillkor och kontaktsätt" :body [dummy4]}])
+
+(defn section-job
+  []
+  [:div {:class "sect"}
+   [:h2 "Fyll i uppgifter om dig och jobben du söker"]
+   [:p {:class "s1"} "Här börjar du bygga upp ett komplett cv för jobben du vill ha. De avsnitt som är märkta “frivillig uppgift” går att hoppa över. Profilen sparas automatiskt i Mina profiler."]
+   [accordion 33 card-list]
+   ])
+
+(defn content
+  []
+  [:div {:class "cont"}
+   [:h1 {:class "create-profile"} "Skapa profil"]
+   [section-name]
+   [section-job]])
 
 (defn body
   []
   [:body-section
    [notification "Glöm inte att publicera din profil för att göra den synlig för arbetsgivare"]
-   [:div {:class "cont"}
-    [:h1 {:class "create-profile"} "Skapa profil"]]
-   [profile-name]
-   [:div {:class "example-text"} "this is a text"](when (not-empty @profile-name-atom)
-       [:div {:class "example-text"} "Your name: " @profile-name-atom])])
+   [content]
+   (when (not-empty @profile-name-atom)
+       [:div {:class "example-text"} "Profile name: " @profile-name-atom])])
 
 
 (defn component
