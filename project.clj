@@ -2,10 +2,16 @@
   :description "A set of demos detailing how to make a basic reagent application"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
-  :dependencies [[org.clojure/clojure "1.9.0"]
+  :dependencies [[org.clojure/clojure "1.8.0"]
                  [binaryage/devtools "0.9.4"]
-                 [org.clojure/clojurescript "1.10.238" :scope "provided"]
-                 [reagent "0.7.0"]]
+                 ;;[org.clojure/clojurescript "1.10.238" :scope "provided"]
+                 [org.clojure/clojurescript "1.10.773" :scope "provided"]
+                 ;;[reagent "0.7.0"]
+                 [reagent "0.10.0"]
+                 [re-frame "1.1.2"]
+                 [day8.re-frame/http-fx "0.2.2"]
+                 [net.cgrand/macrovich "0.2.1"]
+                 [org.clojure/tools.logging "0.4.1"]]
 
   :source-paths ["src/cljs"]
 
